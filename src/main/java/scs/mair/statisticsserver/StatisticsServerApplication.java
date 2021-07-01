@@ -19,20 +19,16 @@ public class StatisticsServerApplication {
         return sb.toString();
     }
 
-    private static void executeShell() throws Exception {
+    public static void main(String[] args) throws Exception {
         String cmd = "/Users/andrei/AplicatieLicenta/run.sh";
         Process process = Runtime.getRuntime().exec(cmd);
-
         String output = loadStream(process.getInputStream());
         String error = loadStream(process.getErrorStream());
         int rc = process.waitFor();
         System.out.println(rc);
         System.out.println(output);
         System.out.println(error);
-    }
 
-    public static void main(String[] args) throws Exception {
-        executeShell();
         SpringApplication.run(StatisticsServerApplication.class, args);
     }
 

@@ -1,11 +1,16 @@
 package scs.mair.statisticsserver.utils;
 
 import scs.mair.statisticsserver.model.Demographic;
+import scs.mair.statisticsserver.model.TopDemographic;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DataParser {
     private final static List<String> years = Arrays.asList("2006", "2013", "2018");
@@ -20,7 +25,7 @@ public class DataParser {
         return new Demographic(Integer.parseInt(number), gender, ethnicity, age);
     }
 
-    public static HashMap<String, HashMap<String, List<Demographic>>> getData() throws IOException {
+    public static HashMap<String, HashMap<String, List<Demographic>>> getYear() throws IOException {
         String basePath = "/Users/andrei/AplicatieLicenta/censusOutput/";
         StringBuilder path;
 
@@ -49,6 +54,34 @@ public class DataParser {
         }
 
         return yearData;
+    }
+
+    public static HashMap<String, List<TopDemographic>> getTop() throws IOException {
+        String basePath = "/Users/andrei/AplicatieLicenta/censusOutput/topTen/";
+        StringBuilder path;
+
+        File file;
+        BufferedReader bufferedReader;
+
+        HashMap<String, List<TopDemographic>> topData = new HashMap<>();
+
+        for (String year : years) {
+            List<TopDemographic> demographics = new LinkedList<>();
+            path = new StringBuilder();
+            path.append(basePath).append(year).append("/result");
+
+            file = new File(path.toString());
+            bufferedReader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] words = line.split(",");
+                demographics.add(new TopDemographic(Integer.parseInt(words[5]), words[4]));
+            }
+            topData.put(year, demographics);
+        }
+
+        return topData;
     }
 
 }
